@@ -1,15 +1,155 @@
-// all issues inside a massive array of objects
-// "all-section" will be made from the allIssues array
-// "open-section" will be made from issues in the "allIssues" array with "status:open", and each will have green top border
-// "closed-section" will be made from issues in the "allIssues" array with "status:closed", and each will have purple top border
-// "status" image will be shown according to the "status" field
-// "priority" block will have design according to the "priority" field
-// "title", "description" and "assignee" will be shown according to the respective fields
-// "created at" will be shown according to the "createdAt" field for "open" issues
-// "updated at" will be shown according to the "updatedAt" field for "closed" issues
-// dates need to be converted to human readable format
-// "labels" field is an array, so, we need another conditional rendering inside, only show the labels that match
-// if nothing can be shown because allIssues array is empty or open/closed sections are empty, render the "no issues found" div for those sections
+const allUrl = "https://phi-lab-server.vercel.app/api/v1/lab/issues";
+async function getAllIssues() {
+  const response = await fetch(allUrl);
+  const data = await response.json();
+  return data.data;
+}
+let allIssues = [];
+let labelDesigns = {
+  bug: { icon: "fa-bug", color: "btn-error" },
+  "help wanted": { icon: "fa-handshake", color: "btn-warning" },
+  enhancement: { icon: "fa-wand-magic-sparkles", color: "btn-success" },
+  documentation: { icon: "fa-book", color: "btn-info" },
+  "good first issue": { icon: "fa-arrow-trend-up", color: "btn-primary" },
+};
+function renderIssuesHeader(sectionID, parantID) {
+  document.getElementById(sectionID).innerHTML = "";
+  document.getElementById(sectionID).innerHTML =
+    `<div id="header-left" class="flex items-center gap-2">
+        <img
+            class="h-12 bg-base-300 rounded-full p-2"
+            src="./assets/Aperture.png"
+            alt="Aperture Logo"
+        />
+        <div id="title+sub-title">
+            <h2 id="title">
+                <span id="total-count-value" class="text-lg font-bold">
+                ${document.getElementById(parantID).children.length}
+                </span>
+                Issues
+            </h2>
+            <p id="sub-title">Track and manage your project issues</p>
+        </div>
+    </div>
+    <div class="flex gap-4">
+        <p class="h-min px-2 py-1 rounded">
+            <span
+                id="open-pallate"
+                class="inline-block bg-green-500 rounded-full w-4 h-4"
+            ></span>
+            Open
+        </p>
+        <p class="h-min px-2 py-1 rounded">
+            <span
+                id="closed-pallate"
+                class="inline-block bg-purple-500 rounded-full w-4 h-4"
+            ></span>
+            Closed
+        </p>
+    </div>
+  `;
+}
+function renderIssueCards(issueList, sectionID) {
+  document.getElementById(sectionID).innerHTML = "";
+  if (issueList.length === 0) {
+    let emptyIssueList = document.createElement("div");
+    emptyIssueList.className =
+      "flex flex-col items-center justify-center gap-4 mt-8";
+    emptyIssueList.innerHTML = `
+            <img src="./assets/alert-error.png" alt="alert-error" />
+            <p class="text-center text-lg font-semibold text-base-content">
+                No issues found
+            </p>
+    `;
+    document.getElementById(sectionID).appendChild(emptyIssueList);
+    document.getElementById("total-count-value").innerText = issueList.length;
+    return;
+  } else {
+    issueList.forEach((issue) => {
+      let isOpen = issue.status === "open";
+      let renderedIssueList = document.createElement("div");
+      renderedIssueList.className =
+        "issue-card rounded-xl bg-base-100 shadow-sm p-2 flex flex-col gap-2 hover:bg-base-300 hover:shadow-md cursor-pointer hover:scale-105 transition-all duration-200 " +
+        (isOpen
+          ? "border-t-4 border-green-600"
+          : "border-t-4 border-purple-600");
+      renderedIssueList.innerHTML = `
+        <div
+         id="card-head"
+         class="flex justify-between items-center gap-2"
+        >
+         ${isOpen ? '<img src="./assets/Open-Status.png" alt="Open Status" />' : '<img src="./assets/Closed-Status.png" alt="Closed Status" />'}
+         <p
+          class="w-fit text-sm font-semibold rounded-full px-2 py-1 ${
+            issue.priority === "high"
+              ? "bg-red-100 text-red-600"
+              : issue.priority === "medium"
+                ? "bg-yellow-100 text-yellow-600"
+                : "bg-gray-100 text-gray-600"
+          }"
+            >
+                ${issue.priority}
+            </p>
+        </div>
+        <div id="card-body" class="flex flex-col gap-2">
+            <h3 id="card-title" class="text-lg font-bold">
+              ${issue.title}
+            </h3>
+            <p
+              id="card-description"
+              class="opacity-70 text-sm font-light text-ellipsis line-clamp-2"
+            >
+              ${issue.description}
+            </p>
+            <div id="card-tags" class="flex gap-2 flex-wrap">
+            </div>
+            <p class="text-sm font-light opacity-70">#${issue.author}</p>
+            <p class="text-sm font-light opacity-70">${
+              isOpen
+                ? new Date(issue.createdAt).toLocaleDateString()
+                : new Date(issue.updatedAt).toLocaleDateString()
+            }</p>
+          </div>
+        `;
+      issue.labels.forEach((label) => {
+        const tag = document.createElement("button");
+        tag.className = `btn btn-outline btn-sm rounded-full ${labelDesigns[label] ? labelDesigns[label].color : ""}`;
+        tag.innerHTML = labelDesigns[label]
+          ? `<i class="fa-solid ${labelDesigns[label].icon}"></i> ${label}`
+          : "";
+        renderedIssueList.querySelector("#card-tags").appendChild(tag);
+      });
+      document.getElementById(sectionID).appendChild(renderedIssueList);
+      document.getElementById("total-count-value").innerText = issueList.length;
+    });
+  }
+}
+async function renderUI() {
+  allIssues = await getAllIssues();
+  if (document.getElementById("all-tab").checked) {
+    renderIssuesHeader("all-issues-header", "all-issues-container");
+    renderIssueCards(allIssues, "all-issues-container");
+  }
+  if (document.getElementById("open-tab").checked) {
+    const openList = allIssues.filter((issue) => issue.status === "open");
+    renderIssuesHeader("open-issues-header", "open-issues-container");
+    renderIssueCards(openList, "open-issues-container");
+  }
+  if (document.getElementById("closed-tab").checked) {
+    const closedList = allIssues.filter((issue) => issue.status === "closed");
+    renderIssuesHeader("closed-issues-header", "closed-issues-container");
+    renderIssueCards(closedList, "closed-issues-container");
+  }
+}
+document.addEventListener("change", (e) => {
+  if (e.target.name === "tab") {
+    renderUI();
+  }
+});
+renderUI();
+
 // load a spinner while API is fetching data
 // when a user clicks on an issue, a modal will open with the issue details
 // a functional search bar that will search for the search query within the allIssues array, and return the matching titles, and this will be using the search api
+// const searchUrl = `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${searchText}`;
+
