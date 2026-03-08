@@ -149,7 +149,6 @@ document.addEventListener("change", (e) => {
 renderUI();
 
 // load a spinner while API is fetching data
-// when a user clicks on an issue, a modal will open with the issue details
-// a functional search bar that will search for the search query within the allIssues array, and return the matching titles, and this will be using the search api
-// const searchUrl = `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${searchText}`;
+// when a user clicks on an issue, a modal will open with the issue details, details will be taken from: `https://phi-lab-server.vercel.app/api/v1/lab/issue/{id}`
+// a functional search bar that will search for the search query within the allIssues array, and return the matching titles, and this will be using the search api: `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${searchText}`;
 
