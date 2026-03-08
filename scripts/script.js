@@ -62,7 +62,6 @@ function renderIssueCards(issueList, sectionID) {
             </p>
     `;
     document.getElementById(sectionID).appendChild(emptyIssueList);
-    document.getElementById("total-count-value").innerText = issueList.length;
     return;
   } else {
     issueList.forEach((issue) => {
@@ -120,7 +119,6 @@ function renderIssueCards(issueList, sectionID) {
         renderedIssueList.querySelector("#card-tags").appendChild(tag);
       });
       document.getElementById(sectionID).appendChild(renderedIssueList);
-      document.getElementById("total-count-value").innerText = issueList.length;
     });
   }
 }
