@@ -12,7 +12,7 @@ let labelDesigns = {
   documentation: { icon: "fa-book", color: "btn-info" },
   "good first issue": { icon: "fa-arrow-trend-up", color: "btn-primary" },
 };
-function renderIssuesHeader(sectionID, parantID) {
+function renderIssuesHeader(sectionID, childCount) {
   document.getElementById(sectionID).innerHTML = "";
   document.getElementById(sectionID).innerHTML =
     `<div id="header-left" class="flex items-center gap-2">
@@ -23,8 +23,8 @@ function renderIssuesHeader(sectionID, parantID) {
         />
         <div id="title+sub-title">
             <h2 id="title">
-                <span id="total-count-value" class="text-lg font-bold">
-                ${document.getElementById(parantID).children.length}
+                <span class="text-lg font-bold">
+                ${childCount}
                 </span>
                 Issues
             </h2>
@@ -125,19 +125,21 @@ function renderIssueCards(issueList, sectionID) {
   }
 }
 async function renderUI() {
-  allIssues = await getAllIssues();
+  if (allIssues.length === 0) {
+    allIssues = await getAllIssues();
+  }
   if (document.getElementById("all-tab").checked) {
-    renderIssuesHeader("all-issues-header", "all-issues-container");
+    renderIssuesHeader("all-issues-header", allIssues.length);
     renderIssueCards(allIssues, "all-issues-container");
   }
   if (document.getElementById("open-tab").checked) {
     const openList = allIssues.filter((issue) => issue.status === "open");
-    renderIssuesHeader("open-issues-header", "open-issues-container");
+    renderIssuesHeader("open-issues-header", openList.length);
     renderIssueCards(openList, "open-issues-container");
   }
   if (document.getElementById("closed-tab").checked) {
     const closedList = allIssues.filter((issue) => issue.status === "closed");
-    renderIssuesHeader("closed-issues-header", "closed-issues-container");
+    renderIssuesHeader("closed-issues-header", closedList.length);
     renderIssueCards(closedList, "closed-issues-container");
   }
 }
