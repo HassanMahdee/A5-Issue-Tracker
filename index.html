@@ -10,28 +10,26 @@
       type="image/x-icon"
     />
     <link rel="stylesheet" href="./styles/style.css" />
-    <!-- DaisuUI & Tailwind CSS -->
     <link
       href="https://cdn.jsdelivr.net/npm/daisyui@5"
       rel="stylesheet"
       type="text/css"
     />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- Font Awesome -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     />
-    <!-- Google Font: Geist -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="./styles/style.css" />
   </head>
   <body>
-    <section id="login-page" class="hidden bg-base-200 py-4">
+    <section id="login-page" class="bg-base-200 py-4">
       <div
         id="login-container"
         class="flex flex-col justify-center items-center gap-2 w-11/12 max-w-sm bg-base-100 p-6 rounded-lg shadow-md mx-auto"
@@ -53,6 +51,7 @@
                 >Username</label
               >
               <input
+                id="username"
                 type="text"
                 class="input w-full"
                 placeholder="Enter your username"
@@ -64,13 +63,14 @@
                 >Password</label
               >
               <input
+                id="password"
                 type="password"
                 class="input w-full"
                 placeholder="Enter your password"
               />
               <p class="text-xs text-primary">Default: admin123</p>
             </div>
-            <button class="btn btn-primary mt-4">Sign In</button>
+            <button id="login-btn" class="btn btn-primary mt-4">Sign In</button>
           </fieldset>
         </div>
         <div id="login-footer" class="w-full flex flex-col gap-2">
@@ -93,7 +93,7 @@
         </div>
       </div>
     </section>
-    <section id="main-page">
+    <section id="main-page" class="hidden">
       <header class="bg-base-100">
         <div
           class="navbar w-fit md:w-full shadow-sm mx-auto md:px-8 items-center flex-col gap-2 md:flex-row"
@@ -122,6 +122,7 @@
       <section id="tabs-section">
         <div class="tabs tabs-box">
           <input
+            id="all-tab"
             type="radio"
             name="tab"
             class="tab"
@@ -134,131 +135,73 @@
           >
             <div>
               <div
-                id="issues-header"
+                id="all-issues-header"
                 class="flex justify-between border-b border-b-gray-300 pb-4"
               >
-                <div id="header-left" class="flex items-center gap-2">
-                  <img
-                    class="h-12 bg-base-300 rounded-full p-2"
-                    src="./assets/Aperture.png"
-                    alt="Aperture Logo"
-                  />
-                  <div id="title+sub-title">
-                    <h2 id="title">
-                      <span id="total-count-value" class="text-lg font-bold"
-                        >0</span
-                      >
-                      Issues
-                    </h2>
-                    <p id="sub-title">Track and manage your project issues</p>
-                  </div>
-                </div>
-                <div id="count" class="flex gap-4">
-                  <p id="open-count" class="h-min px-2 py-1 rounded">
-                    <span
-                      id="open-count-value"
-                      class="text-green-500 text-lg font-bold"
-                      >0</span
-                    >
-                    Open
-                  </p>
-                  <p id="closed-count" class="h-min px-2 py-1 rounded">
-                    <span
-                      id="closed-count-value"
-                      class="text-purple-500 text-lg font-bold"
-                      >0</span
-                    >
-                    Closed
-                  </p>
-                </div>
+                <!-- section header with stat will be inserted here by JavaScript -->
               </div>
               <div
-                id="issues-container"
+                id="all-issues-container"
                 class="bg-base-200 grid grid-cols-4 gap-4 p-1"
               >
-                <div
-                  class="issue-card rounded-xl bg-base-100 shadow-sm border-t-4 border-green-500 p-2 flex flex-col gap-2 hover:bg-base-300 hover:shadow-md cursor-pointer hover:scale-105 transition-all duration-200"
-                >
-                  <div
-                    id="card-head"
-                    class="flex justify-between items-center gap-2"
-                  >
-                    <img src="./assets/Open-Status.png" alt="Open Status" />
-                    <p
-                      class="w-fit text-sm font-semibold rounded-full bg-green-100 text-green-600 px-2 py-1"
-                    >
-                      priority
-                    </p>
-                  </div>
-                  <div id="card-body" class="flex flex-col gap-2">
-                    <h3 id="card-title" class="text-lg font-bold">
-                      Card Title
-                    </h3>
-                    <p
-                      id="card-description"
-                      class="opacity-70 text-sm font-light text-ellipsis line-clamp-2"
-                    >
-                      Card Description, Lorem ipsum dolor sit, amet consectetur
-                      adipisicing elit. Maxime illo similique incidunt at atque
-                      tempore nam animi ad molestiae ut!
-                    </p>
-                    <div id="card-tags" class="flex gap-2 flex-wrap">
-                      <button
-                        class="btn btn-outline btn-error px-2 py-1 rounded-full"
-                      >
-                        <i class="fa-solid fa-bug"></i>Bug
-                      </button>
-                      <button
-                        class="btn btn-outline btn-info px-2 py-1 rounded-full"
-                      >
-                        <i class="fa-solid fa-book"></i>Documentation
-                      </button>
-                      <button
-                        class="btn btn-outline btn-success px-2 py-1 rounded-full"
-                      >
-                        <i class="fa-solid fa-wand-magic-sparkles"></i
-                        >Enhancement
-                      </button>
-                      <button
-                        class="btn btn-outline btn-warning px-2 py-1 rounded-full"
-                      >
-                        <i class="fa-solid fa-hands-helping"></i>Help Wanted
-                      </button>
-                      <button
-                        class="btn btn-outline btn-primary px-2 py-1 rounded-full"
-                      >
-                        <i class="fa-solid fa-arrow-trend-up"></i>Good First
-                        Issue
-                      </button>
-                    </div>
-                    <p class="text-sm font-light opacity-70">assignee</p>
-                    <p class="text-sm font-light opacity-70">Date of issue</p>
-                  </div>
-                </div>
+                <!-- Issue cards will be inserted here by JavaScript -->
               </div>
             </div>
           </div>
 
-          <input type="radio" name="tab" class="tab" aria-label="Open" />
+          <input
+            id="open-tab"
+            type="radio"
+            name="tab"
+            class="tab"
+            aria-label="Open"
+          />
           <div
             id="open-section"
             class="tab-content bg-base-100 border-base-300 p-6"
           >
-            <div class="flex flex-col items-center justify-center gap-4 mt-8">
-              <img src="./assets/alert-error.png" alt="alert-error" />
-              <p class="text-center text-lg font-semibold text-base-content">
-                No issues found
-              </p>
+            <div
+              id="open-issues-header"
+              class="flex justify-between border-b border-b-gray-300 pb-4"
+            >
+              <!-- section header with stat will be inserted here by JavaScript -->
+            </div>
+            <div
+              id="open-issues-container"
+              class="bg-base-200 grid grid-cols-4 gap-4 p-1"
+            >
+              <!-- Issue cards will be inserted here by JavaScript -->
             </div>
           </div>
 
-          <input type="radio" name="tab" class="tab" aria-label="Closed" />
+          <input
+            id="closed-tab"
+            type="radio"
+            name="tab"
+            class="tab"
+            aria-label="Closed"
+          />
           <div
             id="closed-section"
             class="tab-content bg-base-100 border-base-300 p-6"
-          ></div>
+          >
+            <div
+              id="closed-issues-header"
+              class="flex justify-between border-b border-b-gray-300 pb-4"
+            >
+              <!-- section header with stat will be inserted here by JavaScript -->
+            </div>
+            <div
+              id="closed-issues-container"
+              class="bg-base-200 grid grid-cols-4 gap-4 p-1"
+            >
+              <!-- Issue cards will be inserted here by JavaScript -->
+            </div>
+          </div>
         </div>
       </section>
     </section>
+    <script src="./scripts/login.js"></script>
+    <script src="./scripts/script.js"></script>
   </body>
 </html>
