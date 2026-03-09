@@ -1,12 +1,13 @@
 async function renderCardDetails(issueId) {
-  showLoader("details-container");
+  const detailsBox = document.getElementById("details-container");
+  detailsBox.innerHTML = `<span class="loading loading-infinity loading-xl block mx-auto"></span>`;
+  document.getElementById("details_modal").showModal();
   const issue = await fetch(
     `https://phi-lab-server.vercel.app/api/v1/lab/issue/${issueId}`,
   )
     .then((response) => response.json())
     .then((data) => data.data);
-  hideLoader("details-container");
-  let detailsBox = document.getElementById("details-container");
+  detailsBox.innerHTML = "";
   detailsBox.innerHTML = `
     <h3 class="text-2xl font-bold">${issue.title}</h3>
     <div class="flex items-center gap-2">
@@ -27,15 +28,14 @@ async function renderCardDetails(issueId) {
       </div>
       <div class="flex-1 flex flex-col gap-1">
         <p class="text-sm font-light text-gray-500">priority:</p>
-        <p class="font-medium" + ${
+        <p class="font-medium px-2 w-fit rounded-full ${
           issue.priority === "high"
             ? "bg-red-500 text-white"
             : issue.priority === "medium"
               ? "bg-yellow-500 text-white"
               : "bg-gray-500 text-white"
-        }>${issue.priority}</p>
+        }">${issue.priority}</p>
       </div>
     </div>
   `;
-  document.getElementById("details_modal").showModal();
 }
