@@ -11,7 +11,7 @@ async function renderCardDetails(issueId) {
   detailsBox.innerHTML = `
     <h3 class="text-2xl font-bold">${issue.title}</h3>
     <div class="flex items-center gap-2">
-      <span class="badge badge-success rounded-full text-sm font-light">${issue.status}</span>
+      <span class="badge rounded-full text-sm font-light ${issue.status === "open" ? "badge-success" : "badge-primary"}">${issue.status}</span>
       &bull;
       <p class="text-sm font-light text-gray-500">opened by ${issue.author}</p>
       &bull;
