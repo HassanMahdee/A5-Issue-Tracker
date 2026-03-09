@@ -29,7 +29,7 @@
     <link rel="stylesheet" href="./styles/style.css" />
   </head>
   <body>
-    <section id="login-page" class="bg-base-200 py-4">
+    <section id="login-page" class="hidden bg-base-200 py-4">
       <div
         id="login-container"
         class="flex flex-col justify-center items-center gap-2 w-11/12 max-w-sm bg-base-100 p-6 rounded-lg shadow-md mx-auto"
@@ -93,7 +93,7 @@
         </div>
       </div>
     </section>
-    <section id="main-page" class="hidden">
+    <section id="main-page" class="">
       <header class="bg-base-100">
         <div
           class="navbar w-fit md:w-full shadow-sm mx-auto md:px-8 items-center flex-col gap-2 md:flex-row"
@@ -140,6 +140,9 @@
               >
                 <!-- section header with stat will be inserted here by JavaScript -->
               </div>
+              <span
+                class="loading loading-infinity loading-xl block mx-auto"
+              ></span>
               <div
                 id="all-issues-container"
                 class="bg-base-200 grid grid-cols-1 gap-4 p-1 md:grid-cols-2 lg:grid-cols-4"
@@ -166,6 +169,9 @@
             >
               <!-- section header with stat will be inserted here by JavaScript -->
             </div>
+            <span
+              class="loading loading-infinity loading-xl block mx-auto"
+            ></span>
             <div
               id="open-issues-container"
               class="bg-base-200 grid grid-cols-1 gap-4 p-1 md:grid-cols-2 lg:grid-cols-4"
@@ -191,6 +197,9 @@
             >
               <!-- section header with stat will be inserted here by JavaScript -->
             </div>
+            <span
+              class="loading loading-infinity loading-xl block mx-auto"
+            ></span>
             <div
               id="closed-issues-container"
               class="bg-base-200 grid grid-cols-1 gap-4 p-1 md:grid-cols-2 lg:grid-cols-4"
@@ -199,6 +208,18 @@
             </div>
           </div>
         </div>
+        <dialog id="details_modal" class="modal modal-bottom sm:modal-middle">
+          <div class="modal-box">
+            <div id="details-container" class="flex flex-col gap-4">
+              <!-- Issue details will be inserted here by JavaScript -->
+            </div>
+            <div class="modal-action">
+              <form method="dialog">
+                <button class="btn btn-primary">Close</button>
+              </form>
+            </div>
+          </div>
+        </dialog>
       </section>
     </section>
     <script src="./scripts/login.js"></script>

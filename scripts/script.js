@@ -12,6 +12,7 @@ let labelDesigns = {
   documentation: { icon: "fa-book", color: "btn-info" },
   "good first issue": { icon: "fa-arrow-trend-up", color: "btn-primary" },
 };
+
 function renderIssuesHeader(sectionID, childCount) {
   document.getElementById(sectionID).innerHTML = "";
   document.getElementById(sectionID).innerHTML =
@@ -35,14 +36,14 @@ function renderIssuesHeader(sectionID, childCount) {
         <p class="h-min px-2 py-1 rounded">
             <span
                 id="open-pallate"
-                class="inline-block bg-green-500 rounded-full w-4 h-4"
+                class="inline-block bg-green-500 rounded-full w-3 h-3 align-text-middle"
             ></span>
             Open
         </p>
         <p class="h-min px-2 py-1 rounded">
             <span
                 id="closed-pallate"
-                class="inline-block bg-purple-500 rounded-full w-4 h-4"
+                class="inline-block bg-purple-500 rounded-full w-3 h-3 align-text-middle"
             ></span>
             Closed
         </p>
@@ -66,13 +67,13 @@ function renderIssueCards(issueList, sectionID) {
   } else {
     issueList.forEach((issue) => {
       let isOpen = issue.status === "open";
-      let renderedIssueList = document.createElement("div");
-      renderedIssueList.className =
-        "issue-card rounded-xl bg-base-100 shadow-sm p-2 flex flex-col gap-2 hover:bg-base-300 hover:shadow-md cursor-pointer hover:scale-105 transition-all duration-200 " +
+      let renderedIssueCard = document.createElement("div");
+      renderedIssueCard.className =
+        "issue-card rounded-xl bg-base-100 shadow-sm p-2 flex flex-col justify-between gap-2 hover:bg-base-300 hover:shadow-md cursor-pointer hover:scale-105 transition-all duration-200 h-full " +
         (isOpen
           ? "border-t-4 border-green-600"
           : "border-t-4 border-purple-600");
-      renderedIssueList.innerHTML = `
+      renderedIssueCard.innerHTML = `
         <div
          id="card-head"
          class="flex justify-between items-center gap-2"
@@ -90,7 +91,6 @@ function renderIssueCards(issueList, sectionID) {
                 ${issue.priority}
             </p>
         </div>
-        <div id="card-body" class="flex flex-col gap-2">
             <h3 id="card-title" class="text-lg font-bold">
               ${issue.title}
             </h3>
@@ -102,26 +102,71 @@ function renderIssueCards(issueList, sectionID) {
             </p>
             <div id="card-tags" class="flex gap-2 flex-wrap">
             </div>
-            <p class="text-sm font-light opacity-70">#${issue.author}</p>
-            <p class="text-sm font-light opacity-70">${
-              isOpen
-                ? new Date(issue.createdAt).toLocaleDateString()
-                : new Date(issue.updatedAt).toLocaleDateString()
-            }</p>
-          </div>
+            <div class="flex flex-col mt-auto border-t-1 border-gray-300 p-1">
+              <p class="text-sm font-light opacity-70">#${issue.author}</p>
+              <p class="text-sm font-light opacity-70">${
+                isOpen
+                  ? new Date(issue.createdAt).toLocaleDateString()
+                  : new Date(issue.updatedAt).toLocaleDateString()
+              }</p>
+            </div>
         `;
       issue.labels.forEach((label) => {
         const tag = document.createElement("button");
-        tag.className = `btn btn-outline btn-sm rounded-full ${labelDesigns[label] ? labelDesigns[label].color : ""}`;
+        tag.className = `btn btn-outline btn-xs rounded-full ${labelDesigns[label] ? labelDesigns[label].color : ""}`;
         tag.innerHTML = labelDesigns[label]
-          ? `<i class="fa-solid ${labelDesigns[label].icon}"></i> ${label}`
+          ? `<i class="fa-solid ${labelDesigns[label].icon}"></i> ${label.toUpperCase()}`
           : "";
-        renderedIssueList.querySelector("#card-tags").appendChild(tag);
+        renderedIssueCard.querySelector("#card-tags").appendChild(tag);
       });
-      document.getElementById(sectionID).appendChild(renderedIssueList);
+      renderedIssueCard.addEventListener("click", () => {
+        renderCardDetails(issue.id);
+      });
+      document.getElementById(sectionID).appendChild(renderedIssueCard);
     });
   }
 }
+
+async function renderCardDetails(issueId) {
+  const issue = await fetch(
+    `https://phi-lab-server.vercel.app/api/v1/lab/issue/${issueId}`,
+  )
+    .then((response) => response.json())
+    .then((data) => data.data);
+  let detailsBox = document.getElementById("details-container");
+  detailsBox.innerHTML = `
+    <h3 class="text-2xl font-bold">${issue.title}</h3>
+    <div class="flex items-center gap-2">
+      <span class="badge badge-success rounded-full text-sm font-light">${issue.status}</span>
+      &bull;
+      <p class="text-sm font-light text-gray-500">opened by ${issue.author}</p>
+      &bull;
+      <p class="text-sm font-light text-gray-500">created at ${new Date(issue.createdAt).toLocaleDateString()}</p>
+    </div>
+    <div id="details-tags" class="flex gap-2 flex-wrap">
+      ${issue.labels.map((label) => `<button class="btn btn-outline btn-xs rounded-full ${labelDesigns[label] ? labelDesigns[label].color : ""}"><i class="fa-solid ${labelDesigns[label] ? labelDesigns[label].icon : ""}"></i> ${label.toUpperCase()}</button>`).join("")}
+    </div>
+    <p class="font-light text-gray-500">${issue.description}</p>
+    <div class="flex gap-2">
+      <div class="flex-1 flex flex-col gap-1">
+        <p class="text-sm font-light text-gray-500">assigned by:</p>
+        <p class="font-medium">${issue.assignee ? issue.assignee : "N/A"}</p>
+      </div>
+      <div class="flex-1 flex flex-col gap-1">
+        <p class="text-sm font-light text-gray-500">priority:</p>
+        <p class="font-medium" + ${
+          issue.priority === "high"
+            ? "bg-red-500 text-white"
+            : issue.priority === "medium"
+              ? "bg-yellow-500 text-white"
+              : "bg-gray-500 text-white"
+        }>${issue.priority}</p>
+      </div>
+    </div>
+  `;
+  document.getElementById("details_modal").showModal();
+}
+
 async function renderUI() {
   if (allIssues.length === 0) {
     allIssues = await getAllIssues();
@@ -149,6 +194,4 @@ document.addEventListener("change", (e) => {
 renderUI();
 
 // load a spinner while API is fetching data
-// when a user clicks on an issue, a modal will open with the issue details, details will be taken from: `https://phi-lab-server.vercel.app/api/v1/lab/issue/{id}`
-// a functional search bar that will search for the search query within the allIssues array, and return the matching titles, and this will be using the search api: `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${searchText}`;
-
+// // a functional search bar that will search for the search query within the allIssues array, and return the matching titles, and this will be using the search api: `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${searchText}`;

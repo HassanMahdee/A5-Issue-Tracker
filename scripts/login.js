@@ -1,4 +1,4 @@
-document.getElementById("login-btn").addEventListener("click",(e) => {
+document.getElementById("login-btn").addEventListener("click", (e) => {
   const userName = document.getElementById("username").value;
   const userPassword = document.getElementById("password").value;
   if (userName === "admin" && userPassword === "admin123") {
@@ -9,4 +9,9 @@ document.getElementById("login-btn").addEventListener("click",(e) => {
     alert("Username or Password Invalid!");
   }
   return;
+});
+document.getElementById("login-page").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    document.getElementById("login-btn").click();
+  }
 });
