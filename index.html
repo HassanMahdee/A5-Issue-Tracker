@@ -104,14 +104,11 @@
           </div>
           <div class="flex-1 flex items-center gap-2 md:justify-end">
             <input
+              id="search-input"
               type="text"
               placeholder="Search"
               class="input input-bordered w-full md:w-auto"
             />
-            <button class="btn btn-primary md:flex gap-1">
-              <i class="fa-solid fa-search"></i
-              ><span class="hidden md:block">Search Issue</span>
-            </button>
             <button class="btn btn-primary md:flex gap-1">
               <i class="fa-solid fa-plus"></i
               ><span class="hidden md:block">Add Issue</span>
@@ -140,9 +137,6 @@
               >
                 <!-- section header with stat will be inserted here by JavaScript -->
               </div>
-              <span
-                class="loading loading-infinity loading-xl block mx-auto"
-              ></span>
               <div
                 id="all-issues-container"
                 class="bg-base-200 grid grid-cols-1 gap-4 p-1 md:grid-cols-2 lg:grid-cols-4"
@@ -169,9 +163,6 @@
             >
               <!-- section header with stat will be inserted here by JavaScript -->
             </div>
-            <span
-              class="loading loading-infinity loading-xl block mx-auto"
-            ></span>
             <div
               id="open-issues-container"
               class="bg-base-200 grid grid-cols-1 gap-4 p-1 md:grid-cols-2 lg:grid-cols-4"
@@ -197,9 +188,6 @@
             >
               <!-- section header with stat will be inserted here by JavaScript -->
             </div>
-            <span
-              class="loading loading-infinity loading-xl block mx-auto"
-            ></span>
             <div
               id="closed-issues-container"
               class="bg-base-200 grid grid-cols-1 gap-4 p-1 md:grid-cols-2 lg:grid-cols-4"
@@ -224,5 +212,7 @@
     </section>
     <script src="./scripts/login.js"></script>
     <script src="./scripts/script.js"></script>
+    <script src="./scripts/modal.js"></script>
+    <script src="./scripts/search.js"></script>
   </body>
 </html>

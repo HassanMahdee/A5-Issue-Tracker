@@ -12,11 +12,33 @@ let labelDesigns = {
   documentation: { icon: "fa-book", color: "btn-info" },
   "good first issue": { icon: "fa-arrow-trend-up", color: "btn-primary" },
 };
-
+function showLoader(sectionID) {
+  const container = document.getElementById(sectionID);
+  container.classList.remove(
+    "grid",
+    "grid-cols-1",
+    "md:grid-cols-2",
+    "lg:grid-cols-3",
+    "gap-4",
+  );
+  container.innerHTML = "";
+  container.innerHTML = `<span class="loading loading-infinity loading-xl block mx-auto"></span>`;
+}
+function hideLoader(sectionID) {
+  const container = document.getElementById(sectionID);
+  container.classList.add(
+    "grid",
+    "grid-cols-1",
+    "md:grid-cols-2",
+    "lg:grid-cols-3",
+    "gap-4",
+  );
+  container.innerHTML = "";
+}
 function renderIssuesHeader(sectionID, childCount) {
-  document.getElementById(sectionID).innerHTML = "";
-  document.getElementById(sectionID).innerHTML =
-    `<div id="header-left" class="flex items-center gap-2">
+  const container = document.getElementById(sectionID);
+  container.innerHTML = "";
+  container.innerHTML = `<div id="header-left" class="flex items-center gap-2">
         <img
             class="h-12 bg-base-300 rounded-full p-2"
             src="./assets/Aperture.png"
@@ -51,8 +73,16 @@ function renderIssuesHeader(sectionID, childCount) {
   `;
 }
 function renderIssueCards(issueList, sectionID) {
-  document.getElementById(sectionID).innerHTML = "";
+  const container = document.getElementById(sectionID);
+  container.innerHTML = "";
   if (issueList.length === 0) {
+    container.classList.remove(
+      "grid",
+      "grid-cols-1",
+      "md:grid-cols-2",
+      "lg:grid-cols-3",
+      "gap-4",
+    );
     let emptyIssueList = document.createElement("div");
     emptyIssueList.className =
       "flex flex-col items-center justify-center gap-4 mt-8";
@@ -62,7 +92,7 @@ function renderIssueCards(issueList, sectionID) {
                 No issues found
             </p>
     `;
-    document.getElementById(sectionID).appendChild(emptyIssueList);
+    container.appendChild(emptyIssueList);
     return;
   } else {
     issueList.forEach((issue) => {
@@ -122,54 +152,15 @@ function renderIssueCards(issueList, sectionID) {
       renderedIssueCard.addEventListener("click", () => {
         renderCardDetails(issue.id);
       });
-      document.getElementById(sectionID).appendChild(renderedIssueCard);
+      container.appendChild(renderedIssueCard);
     });
   }
 }
-
-async function renderCardDetails(issueId) {
-  const issue = await fetch(
-    `https://phi-lab-server.vercel.app/api/v1/lab/issue/${issueId}`,
-  )
-    .then((response) => response.json())
-    .then((data) => data.data);
-  let detailsBox = document.getElementById("details-container");
-  detailsBox.innerHTML = `
-    <h3 class="text-2xl font-bold">${issue.title}</h3>
-    <div class="flex items-center gap-2">
-      <span class="badge badge-success rounded-full text-sm font-light">${issue.status}</span>
-      &bull;
-      <p class="text-sm font-light text-gray-500">opened by ${issue.author}</p>
-      &bull;
-      <p class="text-sm font-light text-gray-500">created at ${new Date(issue.createdAt).toLocaleDateString()}</p>
-    </div>
-    <div id="details-tags" class="flex gap-2 flex-wrap">
-      ${issue.labels.map((label) => `<button class="btn btn-outline btn-xs rounded-full ${labelDesigns[label] ? labelDesigns[label].color : ""}"><i class="fa-solid ${labelDesigns[label] ? labelDesigns[label].icon : ""}"></i> ${label.toUpperCase()}</button>`).join("")}
-    </div>
-    <p class="font-light text-gray-500">${issue.description}</p>
-    <div class="flex gap-2">
-      <div class="flex-1 flex flex-col gap-1">
-        <p class="text-sm font-light text-gray-500">assigned by:</p>
-        <p class="font-medium">${issue.assignee ? issue.assignee : "N/A"}</p>
-      </div>
-      <div class="flex-1 flex flex-col gap-1">
-        <p class="text-sm font-light text-gray-500">priority:</p>
-        <p class="font-medium" + ${
-          issue.priority === "high"
-            ? "bg-red-500 text-white"
-            : issue.priority === "medium"
-              ? "bg-yellow-500 text-white"
-              : "bg-gray-500 text-white"
-        }>${issue.priority}</p>
-      </div>
-    </div>
-  `;
-  document.getElementById("details_modal").showModal();
-}
-
 async function renderUI() {
   if (allIssues.length === 0) {
+    showLoader("all-issues-container");
     allIssues = await getAllIssues();
+    hideLoader("all-issues-container");
   }
   if (document.getElementById("all-tab").checked) {
     renderIssuesHeader("all-issues-header", allIssues.length);
@@ -192,6 +183,3 @@ document.addEventListener("change", (e) => {
   }
 });
 renderUI();
-
-// load a spinner while API is fetching data
-// // a functional search bar that will search for the search query within the allIssues array, and return the matching titles, and this will be using the search api: `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${searchText}`;
